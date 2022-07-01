@@ -29,6 +29,9 @@ source('R/mod_ray_disc.R')
 #   ____________________________________________________________________________
 #   Simulate Data                                                           ####
 
+# The analyses may take a while if you are not willing to wait proceed
+# directly to Results at the bottom.
+
 #Simulate a tree and ten replicates of a two-state character
 set.seed(123)
 tree<-pbtree(n=200, scale=100, b=1, d=0)
@@ -202,9 +205,7 @@ for (i in 1:10){
   Q.ehe.nwtp.out2[[i]] <- mod_rayDISC(hist[[i]], taxa, rate.mat=Q.ehe.nwtp, root.p=root, p=c(20, .1), verbose = TRUE)
 }
 
-lapply(Q.ehe.out, function(x) x$loglik) %>% unlist()
-lapply(Q.ehe.nwtp.out1, function(x) x$loglik) %>% unlist()
-lapply(Q.ehe.nwtp.out2, function(x) x$loglik) %>% unlist()
+
 
 
 ##  ............................................................................
@@ -236,26 +237,46 @@ for (i in 1:10){
 
 
 #   ____________________________________________________________________________
-#   save all data                                                           ####
-
-# saveRDS(Q.out, file = 'data/Q.out.RDS')
-# saveRDS(M.eq.out, file = 'data/Q.out.RDS')
-# saveRDS(M.s.out, file = 'data/Q.out.RDS')
-#
-# saveRDS(Q.hat.out, file = 'data/Q.out.RDS')
-# saveRDS(Q.ehe.out, file = 'data/Q.out.RDS')
-# saveRDS(Q.out, file = 'data/Q.out.RDS')
-
-
-#   ____________________________________________________________________________
 #   Results                                                                 ####
 
+# if you did not run analyses yourself, uncoment this to load mine
+# load("data/congruent_traits.RData")
 
-lapply(Q.out, function(x) x$loglik) %>% unlist()
-lapply(M.eq.out, function(x) x$loglik) %>% unlist()
-lapply(M.eq.nwtp.out, function(x) x$loglik) %>% unlist()
-lapply(M.s.out, function(x) x$loglik) %>% unlist()
+### . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ..
+### Maximum Likelihoods are the same                                        ####
 
-lapply(Q.hat.out, function(x) x$loglik) %>% unlist()
-lapply(Q.ehe.out, function(x) x$loglik) %>% unlist()
-lapply(Q.che.out, function(x) x$loglik) %>% unlist()
+Mln <- cbind(
+'original'=lapply(Q.out, function(x) x$loglik) %>% unlist(),
+'M.eq'=lapply(M.eq.out, function(x) x$loglik) %>% unlist(),
+'M.eq.nwtp'=lapply(M.eq.nwtp.out, function(x) x$loglik) %>% unlist(),
+'M.s.out'=lapply(M.s.out, function(x) x$loglik) %>% unlist()
+)
+
+print(Mln)
+# the likelihoods are not perfectly the same due to numerical optimization
+print(apply(Mln, 2, function(x) x-Mln[,1]))
+# root mean squarred error
+apply(Mln, 2, function(x) (x-Mln[,1])^2 %>% mean %>% sqrt() )
+
+
+
+### . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ..
+### Other Likelihoods are the same too                                      ####
+
+Ln <- cbind(
+'original'=lapply(Q.hat.out, function(x) x$loglik) %>% unlist(),
+'ehe'=lapply(Q.ehe.out, function(x) x$loglik) %>% unlist(),
+'ehe.nwtp1'=lapply(Q.ehe.nwtp.out1, function(x) x$loglik) %>% unlist(),
+'ehe.nwtp2'=lapply(Q.ehe.nwtp.out2, function(x) x$loglik) %>% unlist(),
+'che'=lapply(Q.che.out, function(x) x$loglik) %>% unlist()
+)
+
+print(Ln)
+# the likelihoods are not perfectly the same due to numerical optimization
+print(apply(Ln, 2, function(x) x-Ln[,1]))
+# root mean squarred error
+apply(Ln, 2, function(x) (x-Ln[,1])^2 %>% mean %>% sqrt() )
+
+
+#save.image("data/congruent_traits.RData")
+
