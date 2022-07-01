@@ -79,6 +79,30 @@ for (i in 1:10){
   M.eq.out[[i]] <- mod_rayDISC(hist[[i]], taxa, rate.mat=M.eq, root.p=root, verbose = TRUE)
 }
 
+#   ____________________________________________________________________________
+#   ML inference under Equivalent nWTP  Model                              ####
+
+
+M.eq.nwtp <- initQ(c(1:3), c(3))
+M.eq.nwtp[1,3] <- M.eq.nwtp[2,3] <- 2
+M.eq.nwtp[3,1] <- M.eq.nwtp[3,2] <- 1
+
+M.eq.nwtp <- Q2model(M.eq.nwtp/.1, diag.as = NA)
+print(M.eq.nwtp)
+#    1  2  3
+# 1 NA  1  3
+# 2  1 NA  3
+# 3  2  2 NA
+
+M.eq.nwtp.out <- list()
+for (i in 1:10){
+  states<- mapvalues(hist[[i]]$states, from = c("1", "2"), to=c("1&2", "3") )
+  taxa<-cbind(names(states), states)
+  root <- c(1/4, 1/4, 1/2)
+  sum(root)
+  M.eq.nwtp.out[[i]] <- mod_rayDISC(hist[[i]], taxa, rate.mat=M.eq.nwtp, root.p=root, verbose = TRUE)
+}
+
 
 #   ____________________________________________________________________________
 #   ML inference under Super-Expansion Model                                ####
@@ -151,6 +175,37 @@ for (i in 1:10){
 }
 
 
+##  ............................................................................
+##  EHE nWTP transformation                                                 ####
+
+# off-diagonal paramters can be any values
+
+Q.ehe.nwtp <- EHEtransform(Q)
+Q.ehe.nwtp[Q.ehe.nwtp==0] <- 20
+Q.ehe.nwtp <- Q2model(Q.ehe.nwtp, diag.as = NA)
+Q.ehe.nwtp
+#      1.1 1.2 2.1 2.2 2.3
+# 1.1  NA   1   2   2   2
+# 1.2   1  NA   2   2   2
+# 2.1   2   2  NA   1   1
+# 2.2   2   2   1  NA   1
+# 2.3   2   2   1   1  NA
+
+Q.ehe.nwtp.out1 <- list()
+Q.ehe.nwtp.out2 <- list()
+for (i in 1:10){
+  states<- mapvalues(hist[[i]]$states, from = c("1", "2"), to=c("1&2", "3&4&5") )
+  taxa<-cbind( names(states), states)
+  root <- c(1/4, 1/4, rep(1/6,3))
+  sum(root)
+  Q.ehe.nwtp.out1[[i]] <- mod_rayDISC(hist[[i]], taxa, rate.mat=Q.ehe.nwtp, root.p=root, p=c(1, .1), verbose = TRUE)
+  Q.ehe.nwtp.out2[[i]] <- mod_rayDISC(hist[[i]], taxa, rate.mat=Q.ehe.nwtp, root.p=root, p=c(20, .1), verbose = TRUE)
+}
+
+lapply(Q.ehe.out, function(x) x$loglik) %>% unlist()
+lapply(Q.ehe.nwtp.out1, function(x) x$loglik) %>% unlist()
+lapply(Q.ehe.nwtp.out2, function(x) x$loglik) %>% unlist()
+
 
 ##  ............................................................................
 ##  CHE transformation                                                      ####
@@ -198,6 +253,7 @@ for (i in 1:10){
 
 lapply(Q.out, function(x) x$loglik) %>% unlist()
 lapply(M.eq.out, function(x) x$loglik) %>% unlist()
+lapply(M.eq.nwtp.out, function(x) x$loglik) %>% unlist()
 lapply(M.s.out, function(x) x$loglik) %>% unlist()
 
 lapply(Q.hat.out, function(x) x$loglik) %>% unlist()
