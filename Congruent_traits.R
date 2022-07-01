@@ -10,20 +10,17 @@
 #   Load libraries                                                          ####
 
 # Install rphenoscate packages that contains functions to automatize hidden state expansions
-install.packages("devtools")
-require(devtools)
-install_github("phenoscape/rphenoscape")
-install_github("uyedaj/rphenoscate")
-
+# install.packages("devtools")
+# require(devtools)
+# install_github("phenoscape/rphenoscape")
+# install_github("uyedaj/rphenoscate")
 library(rphenoscate)
-library(corHMM)
-library(phytools)
-library(plyr)
-library(dplyr)
+
+# source dependecies and install them if they are not
+source('R/dependencies.R')
 # slightly modified version of rayDISC() function from corHMM package
 # with disabled ACE reconstruction to save computational time
 source('R/mod_ray_disc.R')
-
 
 
 #   ____________________________________________________________________________
