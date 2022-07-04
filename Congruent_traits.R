@@ -16,7 +16,7 @@
 # install_github("uyedaj/rphenoscate")
 library(rphenoscate)
 
-# source dependecies and install them if they are not
+# source dependencies and install them if they are not
 source('R/dependencies.R')
 # slightly modified version of rayDISC() function from corHMM package
 # with disabled ACE reconstruction to save computational time
@@ -236,7 +236,7 @@ for (i in 1:10){
 #   ____________________________________________________________________________
 #   Results                                                                 ####
 
-# if you did not run analyses yourself, uncoment this to load mine
+# if you did not run analyses yourself, uncomment this to load my results
 # load("data/congruent_traits.RData")
 
 ### . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ..
@@ -258,7 +258,7 @@ apply(Mln, 2, function(x) (x-Mln[,1])^2 %>% mean %>% sqrt() )
 
 
 ### . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ..
-### Other Likelihoods are the same too                                      ####
+### Likelihoods with specified rates are the same too                       ####
 
 Ln <- cbind(
 'original'=lapply(Q.hat.out, function(x) x$loglik) %>% unlist(),
