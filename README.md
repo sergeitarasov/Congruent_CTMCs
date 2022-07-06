@@ -1,5 +1,5 @@
 # Congruent CTMCs
- R scripts for demonstrating model congruency in phylogenetic Markov models
+ R scripts for demonstrating model congruence in phylogenetic Markov models
 
 ## Quick start guide
 
