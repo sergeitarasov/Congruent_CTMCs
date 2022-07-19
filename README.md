@@ -1,6 +1,8 @@
 # Congruent CTMCs
  R scripts for demonstrating model congruence in phylogenetic Markov models
 
+[Preprint is here](https://www.biorxiv.org/content/10.1101/2022.07.04.498736v1)
+
 ## Quick start guide
 
 Download or Clone this project.
